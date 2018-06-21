@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block meta_title %}{% trans "Home" %}{% endblock %}
+
+{% block breadcrumb_menu %}
+
+<li class="active">{% trans "Home" %}</li>
+
+{% endblock %}
+
+{% block main %}
+
+
+<img id="banner" src="{% static 'img/Banner.jpg' %}"/>
+
+<!--<body style="background-color:#E0E0E0;text-align:center">-->
+
+<p class="highlight">
+      Outstanding lesson plans to enrich your classroom
+</p>
+
+
+
+
+{% endblock %}
