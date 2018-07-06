@@ -335,3 +335,15 @@ except ImportError:
     pass
 else:
     set_dynamic_settings(globals())
+
+#  EMAIL SETTINGS  #
+DEFAULT_FROM_EMAIL = "eslclickandteach@gmail.com"
+EMAIL_HOST_USER = "eslclickandteach@gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_PASSWORD = "ALskDJfhG1"
+EMAIL_PORT = 587
+
+ACCOUNT_ENABLE = True
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
