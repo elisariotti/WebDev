@@ -39,6 +39,10 @@ urlpatterns += [
 
     url("^$", direct_to_template, {"template": "index.html"}, name="home"),
 
+    # NEWSLETTERS
+    # ---------------------------
+    url("^newsletters/", include("newsletters.urls", app_name="newsletters", namespace="newsletters")),
+
     # HOMEPAGE AS AN EDITABLE PAGE IN THE PAGE TREE
     # ---------------------------------------------
     # This pattern gives us a normal ``Page`` object, so that your

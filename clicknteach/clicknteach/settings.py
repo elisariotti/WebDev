@@ -94,6 +94,8 @@ USE_MODELTRANSLATION = False
 # See https://docs.djangoproject.com/en/dev/ref/settings/I#allowed-host
 ALLOWED_HOSTS = ['.pythonanywhere.com', 'localhost', '127.0.0.1']
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -232,6 +234,7 @@ if DJANGO_VERSION < (1, 9):
 INSTALLED_APPS = (
     "theme1",
     "newsletters",
+    "crispy_forms",	
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
