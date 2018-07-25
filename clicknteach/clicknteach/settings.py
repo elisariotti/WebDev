@@ -234,9 +234,10 @@ if DJANGO_VERSION < (1, 9):
 INSTALLED_APPS = (
     "theme1",
     "newsletters",
-    "crispy_forms",	
+    "crispy_forms",
     "django.contrib.admin",
     "django.contrib.auth",
+    "django.contrib.messages",    
     "django.contrib.contenttypes",
     "django.contrib.redirects",
     "django.contrib.sessions",
@@ -252,8 +253,8 @@ INSTALLED_APPS = (
     "mezzanine.forms",
     "mezzanine.galleries",
     "mezzanine.twitter",
-    # "mezzanine.accounts",
-    # "mezzanine.mobile",
+    "mezzanine.accounts",
+    "mezzanine.mobile",
 )
 
 # List of middleware classes to use. Order is important; in the request phase,

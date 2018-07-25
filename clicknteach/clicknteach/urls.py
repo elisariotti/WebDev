@@ -41,7 +41,7 @@ urlpatterns += [
 
     # NEWSLETTERS
     # ---------------------------
-    url("^newsletters/", include("newsletters.urls", app_name="newsletters", namespace="newsletters")),
+    url(r'^newsletters/', include("newsletters.urls", app_name="newsletters", namespace="newsletters")),
 
     # HOMEPAGE AS AN EDITABLE PAGE IN THE PAGE TREE
     # ---------------------------------------------
