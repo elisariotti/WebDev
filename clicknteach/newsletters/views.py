@@ -1,86 +1,119 @@
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.template.loader import get_template
-from .models import NewsletterUser
-from .forms import NewsletterUserSignUpForm, NewsletterUserUnsubsForm
+from django.contrib.auth.models import User
+from .models import Newsletter, Profile
+from .forms import NewsletterCreationForm
 
-def newsletter_signup(request):
-	form = NewsletterUserSignUpForm(request.POST or None)
+def control_newsletters(request):
+	form = NewsletterCreationForm(request.POST or None)
 
 	if form.is_valid():
-		instance = form.save(commit=False)
-		if NewsletterUser.objects.filter(email=instance.email).exists():
-			messages.warning(request,
-							'You email already exists in our database',
-							"alert alert-warning alert-dismissible")
-		else:
-			instance.save()
-			messages.success(request,
-							'You email has been submited to the database',
-							"alert alert-success alert-dismissible")
-			# Email parameters
-			subject = "Thank you for joing our Newsletter!"
+		instance = form.save()
+		newsletter = Newsletter.objects.get(id=instance.id)
+		if newsletter.status == "Published":
+			subject = newsletter.subject
+			body = newsletter.body
 			from_email = settings.EMAIL_HOST_USER
-			to_email = [instance.email]
 
-			# to open a file
-			with open(settings.BASE_DIR + "/templates/newsletters/sign_up_email.txt") as f:
-				signup_message = f.read()
-			message = EmailMultiAlternatives(subject = subject, body = signup_message, from_email=from_email, to=to_email)
-			html_template = get_template("newsletters/sign_up_email.html").render()
-			message.attach_alternative(html_template, "text/html")
-			message.send()
+			email_list = newsletter.users.all().values_list('email', flat=True)
+			#email_list = newsletter.users.filter(profile__newsletter_reader=True).values_list('email', flat=True)
+			for email in email_list:
+				send_mail(subject=subject, from_email=from_email,
+				recipient_list=[email], message=body, fail_silently=True)
 
+		return redirect('control_panel:control_newsletter_detail', pk=newsletter.pk)
 	context = {
-		'form': form,
+		"form":form,
 	}
 
-	template = "./newsletters/sign_up.html"
+	template = "./control_panel/control_newsletters.html"
+	return render(request, template, context)
 
+def control_newsletter_edit(request, pk):
+	newsletter = get_object_or_404(Newsletter, pk=pk)
+
+	if request.method == 'POST':
+		form = NewsletterCreationForm(request.POST, instance=newsletter)
+
+		if form.is_valid():
+			newsletter = form.save()
+			if newsletter.status == "Published":
+				subject = newsletter.subject
+				body = newsletter.body
+				from_email = settings.EMAIL_HOST_USER
+
+				email_list = newsletter.users.all().values_list('email', flat=True)
+				#email_list = newsletter.users.filter(profile__newsletter_reader=True).values_list('email', flat=True)
+				for email in email_list:
+					send_mail(subject=subject, from_email=from_email, recipient_list=[email], message=body, fail_silently=True)
+
+			return redirect('control_panel:control_newsletter_detail', pk=newsletter.pk)
+	else:
+		form = NewsletterCreationForm(instance=newsletter)
+
+	context = {
+		"form":form,
+	}
+	template = "./control_panel/control_newsletters.html"
+	return render(request, template, context)
+
+def control_newsletter_detail(request, pk ):
+	newsletter = get_object_or_404(Newsletter, pk=pk)
+	user_list = newsletter.users.all().values_list('username', flat=True)
+	context = {
+		"newsletter": newsletter,
+		"user_list": user_list,		
+	}
+	template = "./control_panel/control_newsletter_detail.html"
 	return render(request, template, context)
 
 
-def newsletter_unsubscribe(request):
-	form = NewsletterUserUnsubsForm(request.POST or None)
+def control_newsletter_delete(request, pk):
+	newsletter = get_object_or_404(Newsletter, pk=pk)
 
-	if form.is_valid():
-		instance = form.save(commit=False)
-		if NewsletterUser.objects.filter(email=instance.email).exists():
-			NewsletterUser.objects.filter(email=instance.email).delete()
-			messages.success(request,
-							'You email has been removed',
-							"alert alert-success alert-dismissible")
+	if request.method == 'POST':
+		form = NewsletterCreationForm(request.POST, instance=newsletter)
 
-			# Email parameters
-			subject = "You've been unsubscribed."
-			from_email = settings.EMAIL_HOST_USER
-			to_email = [instance.email]
+		if form.is_valid():
+			newsletter.delete()
+			return redirect('control_panel:control_newsletter_list')
 
-			# Envio direto
-			#signup_message = """Sorry to see you go, let us know if there is an issue with our service."""
-			#send_mail(subject=subject, from_email=from_email, recipient_list=to_email, message=signup_message, fail_silently=False,)
-
-			# to open a file
-			with open(settings.BASE_DIR + "/templates/newsletters/unsubscribe_email.txt") as f:
-				signup_message = f.read()
-			message = EmailMultiAlternatives(subject = subject, body = signup_message, from_email=from_email, to=to_email)
-			html_template = get_template("newsletters/unsubscribe_email.html").render()
-			message.attach_alternative(html_template, "text/html")
-			message.send()
-
-
-		else:
-			messages.warning(request,
-							'You email is not in the database',
-							"alert alert-warning alert-dismissible")
-
+	else:
+		form = NewsletterCreationForm(instance=newsletter)
 
 	context = {
-		'form': form,
+		"form":form,
+	}
+	template = "./control_panel/control_newsletter_delete.html"
+	return render(request, template, context)
+
+def control_newsletter_list(request):
+	#newsletters = Newsletter.objects.all()
+	newsletters = Newsletter.objects.all().order_by('updated')[::-1]
+	paginator = Paginator(newsletters, 10)
+	page = request.GET.get('page')
+
+	try:
+		items = paginator.page(page)
+	except PageNotAnInteger:
+		items = paginator.page(1)
+	except EmptyPage:
+		 items = paginator.page(paginator.num_pages)
+
+	index = items.number - 1
+	max_index = len(paginator.page_range)
+	start_index = index - 5 if index >= 5 else 0
+	end_index = index + 5 if index <= max_index - 5 else max_index
+	page_range = paginator.page_range[start_index:end_index]
+
+	context = {
+	"items": items,
+	"page_range": page_range,
 	}
 
-	template = "./newsletters/unsubscribe.html"
-
+	template = "./control_panel/control_newsletter_list.html"
 	return render(request, template, context)

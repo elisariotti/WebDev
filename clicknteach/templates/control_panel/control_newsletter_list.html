@@ -1,0 +1,41 @@
+{% extends "control_base.html" %}
+{% load crispy_forms_tags %}
+{% block control %}
+<div class="main">
+  <div class="row">
+    <div class="col-sm-10">
+      <h1 class="page-header">All Newsletters</h1>
+    </div>
+    <div class="col-sm-2">
+      <a href="{% url "control_panel:control_newsletters" %}"> <!--<a href="#"> { % url "control_panel:control_newsletters" % } -->
+        <button type="button" class="btn-success">New Newsletter</button>
+      </a>
+    </div>
+    <div class="table-responsive table-hover">
+      <table class="table">
+        <thead>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td><a href="{% url "control_panel:control_newsletter_detail" pk=item.pk %}"> {{ item.subject }}</a></td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.created }}</td>
+            <td>{{ item.updated }}</td>
+            <td><a href="{% url "control_panel:control_newsletter_edit" pk=item.pk %}">Edit</a></td>
+            <td><a href="{% url "control_panel:control_newsletter_delete" pk=item.pk %}">Delete</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% include "./pagination.html" %}
+</div>
+{% endblock %}

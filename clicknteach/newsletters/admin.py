@@ -1,12 +1,9 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import NewsletterUser, Newsletter
+from .models import Newsletter
 
 class NewsletterAdmin(admin.ModelAdmin):
-	list_display = ('email', 'name', 'date_added',)
+	list_display = ('subject', 'status', 'created',)
 
-
-admin.site.register(NewsletterUser, NewsletterAdmin)
-
-admin.site.register(Newsletter)
+admin.site.register(Newsletter, NewsletterAdmin)

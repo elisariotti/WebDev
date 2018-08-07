@@ -1,0 +1,120 @@
+{% load pages_tags mezzanine_tags i18n staticfiles accounts_tags %}
+{% if request.user.is_authenticated and request.user.is_staff %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+
+    <title>Dashboard for Newsletters</title>
+
+    {% compress css %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="{% static "css/ie10-viewport-bug-workaround.css" %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static "css/dashboard.css" %}" rel="stylesheet">
+
+    <link href="{% static "css/newsletter.css" %}" rel="stylesheet">
+    {% endcompress %}
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    {% compress js %}
+    <script src="{% static "js/ie-emulation-modes-warning.js" %}"></script>
+    {% endcompress %}
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url "control_panel:control_newsletter_list" %}">Click&Teach - Newsletters</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="../../admin">MEZZANINE</a></li>
+            <li><a href="{% url "control_panel:control_newsletter_list" %}">Newsletters</a></li>
+            {% if request.user.is_authenticated %}
+              {% url "profile" request.user.username as profile_url %}
+              <li><a href="{% url "profile_update" %}">Logged in as {{ request.user|username_or:"email" }}</a></li>
+              <li><a href="{% url "logout" %}?next={{ request.path }}">
+              <span class="glyphicon glyphicon-log-out"></span> {% trans "Log out" %}</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!--
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"></li>
+            <li><a href="#">Analytics</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="{ % url "control_panel:control_newsletter_list" % }">Newsletters</a></li>
+          </ul>
+        </div>
+      -->
+        <div class="col-md-8 ">
+
+        {% block control %}
+        {% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="../../assets/js/vendor/holder.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+{% else %}
+
+<html>
+<body>
+  <h1>You must be logged to use the control panel. </h1>
+
+
+      <a href="{% url "login" %}?next={{ request.path }}" class="btn btn-default btn-sm btn-account">
+          <span class="glyphicon glyphicon-log-in"></span> {% trans "Log in" %}</a>
+      &nbsp;{% trans "or" %}&nbsp;
+      <a href="{% url "signup" %}?next={{ request.path }}" class="btn btn-default btn-sm btn-account">
+          <span class="glyphicon glyphicon-edit"></span> {% trans "Sign up" %}</a>
+
+
+</body>
+</html>
+
+{% endif%}

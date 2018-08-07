@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
 <link rel="stylesheet" href="{% static "css/mezzanine.css" %}">
 <link rel="stylesheet" href="{% static "css/bootstrap-theme.css" %}">
+<link rel="stylesheet" href="{% static "css/signin.css" %}">
 {% if LANGUAGE_BIDI %}
 <link rel="stylesheet" href="{% static "css/bootstrap-rtl.css" %}">
 {% endif %}
@@ -136,7 +137,6 @@
    margin-top: 0px;
  }
 
-
 </style>
 
 {% block extra_head %}{% endblock %}
@@ -210,20 +210,40 @@
 </div>
 
 <div class="col-md-3 right">
-      <div class="panel panel-default">
-    <div class="panel-body">
-            <img src="{% static 'img/join.jpg' %}"/>
 
-    <form action="/action_page.php">
-  Name:<br>
-  <input type="text" name="Name" value=""><br>
-  E-mail:<br>
-  <input type="text" name="Email" value=""><br><br>
-  <input type="submit" value="Subscribe">
-</form>
+  {% nevercache %}
+  {% include "includes/language_selector.html" %}
 
-          </div>
+  {% if request.user.is_authenticated %}
+    {% include "includes/user_panel.html" %}
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <a href="#">
+        <img src="{% static 'img/add.jpg' %}"/></a>
+      </div>
     </div>
+  {% else %}
+
+    <div class="panel panel-default">
+      <div class="panel-body">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="{% url "login" %}?next={{ request.path }}" class="btn btn-default btn-sm btn-account">
+          <span class="glyphicon glyphicon-log-in"></span> {% trans "Log in" %}</a>
+          &nbsp;{% trans "or" %}&nbsp;
+          <a href="{% url "signup" %}?next={{ request.path }}" class="btn btn-default btn-sm btn-account">
+          <span class="glyphicon glyphicon-edit"></span> {% trans "Sign up" %}</a>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <a href="{% url "signup" %}?next={{ request.path }}">
+        <img src="{% static 'img/join.jpg' %}"/></a>
+      </div>
+    </div>
+  {% endif %}
+  {% endnevercache %}
+
 </div>
 
 </div>

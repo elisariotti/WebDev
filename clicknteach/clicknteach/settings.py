@@ -234,10 +234,12 @@ if DJANGO_VERSION < (1, 9):
 INSTALLED_APPS = (
     "theme1",
     "newsletters",
+    "control_panel",
+    "users",
     "crispy_forms",
     "django.contrib.admin",
     "django.contrib.auth",
-    "django.contrib.messages",    
+    "django.contrib.messages",
     "django.contrib.contenttypes",
     "django.contrib.redirects",
     "django.contrib.sessions",
@@ -256,6 +258,22 @@ INSTALLED_APPS = (
     "mezzanine.accounts",
     "mezzanine.mobile",
 )
+
+# ACCOUNTS
+# Account Verification
+#when set to True, will send new user an email with a verification link
+#that they must click on, in order to activate their account.
+ACCOUNTS_VERIFICATION_REQUIRED = True
+ACCOUNTS_PROFILE_VIEWS_ENABLED = True
+ACCOUNTS_PROFILE_MODEL = "users.Profile" #ACCOUNTS_PROFILE_MODEL = True
+ACCOUNTS_NO_USERNAME = True
+ACCOUNTS_PROFILE_FORM_EXCLUDE_FIELDS = (
+    "first_name",
+    "last_name",
+)
+
+
+#LOGIN_REDIRECT_URL = '/control/newsletter-list/'
 
 # List of middleware classes to use. Order is important; in the request phase,
 # these middleware classes will be applied in the order given, and in the
