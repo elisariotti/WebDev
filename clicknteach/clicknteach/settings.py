@@ -272,7 +272,10 @@ ACCOUNTS_PROFILE_FORM_EXCLUDE_FIELDS = (
     "last_name",
 )
 
-
+DEVICE_USER_AGENTS = (
+    ("mobile", ("Android", "BlackBerry", "iPhone")),
+    ("desktop", ("Windows", "Macintosh", "Linux")),
+)
 #LOGIN_REDIRECT_URL = '/control/newsletter-list/'
 
 # List of middleware classes to use. Order is important; in the request phase,
@@ -283,7 +286,7 @@ MIDDLEWARE_CLASSES = (
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     # Uncomment if using internationalisation or localisation
-    # 'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
