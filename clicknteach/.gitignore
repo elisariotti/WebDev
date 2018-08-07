@@ -2,4 +2,5 @@
 *.pyo
 .DS_Store
 .coverage
+dev.db
 local_settings.py
