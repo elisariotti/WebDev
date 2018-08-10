@@ -22,11 +22,11 @@ def control_newsletters(request):
 			subject = newsletter.subject
 
 			# content
-			open("./templates/control_panel/default_newsletters.html", "w").close()
-			text_file = open("./templates/control_panel/default_newsletters.html", "w")
+			open(settings.BASE_DIR + "/templates/control_panel/default_newsletters.html", "w").close()
+			text_file = open(settings.BASE_DIR + "/templates/control_panel/default_newsletters.html", "w")
 			text_file.write(newsletter.content)
 			text_file.close()
-			htmly = get_template('./control_panel/default_newsletters.html')
+			htmly = get_template('control_panel/default_newsletters.html')
 			html_message = htmly.render()
 			plain_message = strip_tags(html_message)
 
@@ -64,11 +64,11 @@ def control_newsletter_edit(request, pk):
 				from_email = settings.EMAIL_HOST_USER
 
 				# content # content = newsletter.content
-				open("./templates/control_panel/default_newsletters.html", "w").close()
-				text_file = open("./templates/control_panel/default_newsletters.html", "w")
+				open(settings.BASE_DIR + "/templates/control_panel/default_newsletters.html", "w").close()
+				text_file = open(settings.BASE_DIR + "/templates/control_panel/default_newsletters.html", "w")
 				text_file.write(newsletter.content)
 				text_file.close()
-				htmly = get_template('./control_panel/default_newsletters.html')
+				htmly = get_template('control_panel/default_newsletters.html')
 				html_message = htmly.render()
 				plain_message = strip_tags(html_message)
 
