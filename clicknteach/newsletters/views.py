@@ -2,28 +2,45 @@ from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.template.loader import get_template
 from django.contrib.auth.models import User
-from .models import Newsletter, Profile
-from .forms import NewsletterCreationForm
+from .models import Profile, Newsletter
+from .forms import NewsletterForm
+
+
 
 def control_newsletters(request):
-	form = NewsletterCreationForm(request.POST or None)
+	form = NewsletterForm(request.POST or None)
 
 	if form.is_valid():
 		instance = form.save()
 		newsletter = Newsletter.objects.get(id=instance.id)
 		if newsletter.status == "Published":
 			subject = newsletter.subject
-			body = newsletter.body
-			from_email = settings.EMAIL_HOST_USER
 
+			# content
+			open("./templates/control_panel/default_newsletters.html", "w").close()
+			text_file = open("./templates/control_panel/default_newsletters.html", "w")
+			text_file.write(newsletter.content)
+			text_file.close()
+			htmly = get_template('./control_panel/default_newsletters.html')
+			html_message = htmly.render()
+			plain_message = strip_tags(html_message)
+
+			from_email = settings.EMAIL_HOST_USER
 			email_list = newsletter.users.all().values_list('email', flat=True)
 			#email_list = newsletter.users.filter(profile__newsletter_reader=True).values_list('email', flat=True)
 			for email in email_list:
-				send_mail(subject=subject, from_email=from_email,
-				recipient_list=[email], message=body, fail_silently=True)
+				message = EmailMultiAlternatives(subject = subject, body = plain_message, from_email=from_email, to=[email])
+				message.attach_alternative(html_message, "text/html")
+				message.send()
+
+				#send_mail(subject=subject, from_email=from_email,
+				#recipient_list=[email], html_message=html_message,
+				#plain_message=plain_message, fail_silently=True,)
 
 		return redirect('control_panel:control_newsletter_detail', pk=newsletter.pk)
 	context = {
@@ -37,23 +54,36 @@ def control_newsletter_edit(request, pk):
 	newsletter = get_object_or_404(Newsletter, pk=pk)
 
 	if request.method == 'POST':
-		form = NewsletterCreationForm(request.POST, instance=newsletter)
+		form = NewsletterForm(request.POST, instance=newsletter)
 
 		if form.is_valid():
 			newsletter = form.save()
 			if newsletter.status == "Published":
 				subject = newsletter.subject
-				body = newsletter.body
+
 				from_email = settings.EMAIL_HOST_USER
 
+				# content # content = newsletter.content
+				open("./templates/control_panel/default_newsletters.html", "w").close()
+				text_file = open("./templates/control_panel/default_newsletters.html", "w")
+				text_file.write(newsletter.content)
+				text_file.close()
+				htmly = get_template('./control_panel/default_newsletters.html')
+				html_message = htmly.render()
+				plain_message = strip_tags(html_message)
+
 				email_list = newsletter.users.all().values_list('email', flat=True)
-				#email_list = newsletter.users.filter(profile__newsletter_reader=True).values_list('email', flat=True)
 				for email in email_list:
-					send_mail(subject=subject, from_email=from_email, recipient_list=[email], message=body, fail_silently=True)
+
+					message = EmailMultiAlternatives(subject = subject, body = plain_message, from_email=from_email, to=[email])
+					message.attach_alternative(html_message, "text/html")
+					message.send()
+
+					#send_mail(subject=subject, from_email=from_email, recipient_list=[email], message=content, fail_silently=True)
 
 			return redirect('control_panel:control_newsletter_detail', pk=newsletter.pk)
 	else:
-		form = NewsletterCreationForm(instance=newsletter)
+		form = NewsletterForm(instance=newsletter)
 
 	context = {
 		"form":form,
@@ -66,7 +96,7 @@ def control_newsletter_detail(request, pk ):
 	user_list = newsletter.users.all().values_list('username', flat=True)
 	context = {
 		"newsletter": newsletter,
-		"user_list": user_list,		
+		"user_list": user_list,
 	}
 	template = "./control_panel/control_newsletter_detail.html"
 	return render(request, template, context)
@@ -76,14 +106,14 @@ def control_newsletter_delete(request, pk):
 	newsletter = get_object_or_404(Newsletter, pk=pk)
 
 	if request.method == 'POST':
-		form = NewsletterCreationForm(request.POST, instance=newsletter)
+		form = NewsletterForm(request.POST, instance=newsletter)
 
 		if form.is_valid():
 			newsletter.delete()
 			return redirect('control_panel:control_newsletter_list')
 
 	else:
-		form = NewsletterCreationForm(instance=newsletter)
+		form = NewsletterForm(instance=newsletter)
 
 	context = {
 		"form":form,

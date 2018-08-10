@@ -39,18 +39,11 @@ urlpatterns += [
 
     url("^$", direct_to_template, {"template": "index.html"}, name="home"),
 
-    # NEWSLETTERS
-    # ---------------------------
-    #url(r'^newsletters/', include("newsletters.urls", app_name="newsletters", namespace="newsletters")),
-
 
     # PANEL_CONTROL to NEWSLETTERS
     # ---------------------------
     url(r'^newsletters/', include("control_panel.urls", app_name="control_panel", namespace="control_panel")),
 
-    # ACCOUNTS
-    # ---------------------------
-    #url(r'^accountss/', include("accounts.urls", app_name="accounts", namespace="accounts")),
 
     # HOMEPAGE AS AN EDITABLE PAGE IN THE PAGE TREE
     # ---------------------------------------------
