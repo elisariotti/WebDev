@@ -256,7 +256,7 @@ INSTALLED_APPS = (
     "mezzanine.galleries",
     "mezzanine.twitter",
     "mezzanine.accounts",
-    #"mezzanine.mobile",
+    "mezzanine.mobile",
 )
 
 # ACCOUNTS
@@ -272,18 +272,16 @@ ACCOUNTS_PROFILE_FORM_EXCLUDE_FIELDS = (
     "last_name",
 )
 
-DEVICE_USER_AGENTS = (
-    ("mobile", ("Android", "BlackBerry", "iPhone")),
-    ("desktop", ("Windows", "Macintosh", "Linux")),
-)
+#DEVICE_USER_AGENTS = (
+#    ("mobile", ("Android", "BlackBerry", "iPhone")),
+#    ("desktop", ("Windows", "Macintosh", "Linux")),
+#)
 #LOGIN_REDIRECT_URL = '/control/newsletter-list/'
 
 # List of middleware classes to use. Order is important; in the request phase,
 # these middleware classes will be applied in the order given, and in the
 # response phase the middleware will be applied in reverse order.
 MIDDLEWARE_CLASSES = (
-    "mezzanine.core.middleware.UpdateCacheMiddleware",
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     # Uncomment if using internationalisation or localisation
     'django.middleware.locale.LocaleMiddleware',
@@ -294,14 +292,16 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+
     "mezzanine.core.request.CurrentRequestMiddleware",
+    "mezzanine.core.middleware.UpdateCacheMiddleware",
     "mezzanine.core.middleware.RedirectFallbackMiddleware",
     "mezzanine.core.middleware.TemplateForDeviceMiddleware",
     "mezzanine.core.middleware.TemplateForHostMiddleware",
     "mezzanine.core.middleware.AdminLoginInterfaceSelectorMiddleware",
     "mezzanine.core.middleware.SitePermissionMiddleware",
-    "mezzanine.pages.middleware.PageMiddleware",
     "mezzanine.core.middleware.FetchFromCacheMiddleware",
+    "mezzanine.pages.middleware.PageMiddleware",
 )
 
 # Store these package names here as they may change in the future since

@@ -1,13 +1,10 @@
 from django.conf import settings
-from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.template.loader import get_template
-from django.contrib.auth.models import User
-from .models import Profile, Newsletter
+from .models import Newsletter
 from .forms import NewsletterForm
 
 
