@@ -272,10 +272,13 @@ ACCOUNTS_PROFILE_FORM_EXCLUDE_FIELDS = (
     "last_name",
 )
 
-#DEVICE_USER_AGENTS = (
-#    ("mobile", ("Android", "BlackBerry", "iPhone")),
-#    ("desktop", ("Windows", "Macintosh", "Linux")),
-#)
+DEVICE_USER_AGENTS = (
+    ("mobile", ("Android", "BlackBerry", "iPhone")),
+    ("desktop", ("Windows", "Macintosh", "Linux")),
+)
+
+DEVICE_DEFAULT = ''
+
 #LOGIN_REDIRECT_URL = '/control/newsletter-list/'
 
 # List of middleware classes to use. Order is important; in the request phase,
